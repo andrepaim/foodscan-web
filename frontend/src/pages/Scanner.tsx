@@ -129,9 +129,15 @@ export function Scanner() {
       </div>
 
       {/* Header */}
-      <div className="absolute top-0 left-0 right-0 p-4 bg-gradient-to-b from-black/80 to-transparent">
-        <h1 className="text-white text-xl font-semibold text-center">FoodScan</h1>
+      <div className="absolute top-0 left-0 right-0 p-4 bg-gradient-to-b from-black/80 to-transparent flex items-center">
+        <button onClick={() => navigate("/")} className="text-white/70 hover:text-white mr-3">
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <h1 className="text-white text-xl font-semibold">Scan Barcode</h1>
       </div>
+
     </div>
   );
 }

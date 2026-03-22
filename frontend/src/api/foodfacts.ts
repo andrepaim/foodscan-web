@@ -12,6 +12,11 @@ export interface FoodProduct {
     fat: number;
   };
   servingSizeG?: number;
+  unit: "g" | "ml";
+  source?: "barcode" | "photo";
+  confidence?: "low" | "medium" | "high";
+  confidenceReason?: string;
+  notes?: string;
 }
 
 export async function lookupBarcode(barcode: string): Promise<FoodProduct | null> {
@@ -25,6 +30,8 @@ export async function lookupBarcode(barcode: string): Promise<FoodProduct | null
   const p = data.product;
   const n = p.nutriments ?? {};
 
+  const { size, unit } = parseServingSize(p.serving_size);
+
   return {
     barcode,
     name: p.product_name ?? "Unknown product",
@@ -36,12 +43,16 @@ export async function lookupBarcode(barcode: string): Promise<FoodProduct | null
       carbs: n["carbohydrates_100g"] ?? 0,
       fat: n["fat_100g"] ?? 0,
     },
-    servingSizeG: parseServingSize(p.serving_size),
+    servingSizeG: size,
+    unit,
   };
 }
 
-function parseServingSize(raw: string | undefined): number | undefined {
-  if (!raw) return undefined;
-  const match = raw.match(/(\d+(\.\d+)?)\s*g/i);
-  return match ? parseFloat(match[1]) : undefined;
+function parseServingSize(raw: string | undefined): { size?: number; unit: "g" | "ml" } {
+  if (!raw) return { unit: "g" };
+  const mlMatch = raw.match(/(\d+(\.\d+)?)\s*ml/i);
+  if (mlMatch) return { size: parseFloat(mlMatch[1]), unit: "ml" };
+  const gMatch = raw.match(/(\d+(\.\d+)?)\s*g/i);
+  if (gMatch) return { size: parseFloat(gMatch[1]), unit: "g" };
+  return { unit: "g" };
 }

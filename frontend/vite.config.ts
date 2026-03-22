@@ -7,6 +7,10 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: "autoUpdate",
+      workbox: {
+        // Don't intercept navigation to standalone HTML pages
+        navigateFallbackDenylist: [/^\/treinos/, /^\/mobilidade/, /.*\.html$/],
+      },
       manifest: {
         name: "FoodScan",
         short_name: "FoodScan",
@@ -14,16 +18,21 @@ export default defineConfig({
         theme_color: "#000000",
         background_color: "#000000",
         display: "standalone",
+        orientation: "portrait",
+        start_url: "/",
+        scope: "/",
         icons: [
           {
             src: "pwa-192x192.png",
             sizes: "192x192",
             type: "image/png",
+            purpose: "any maskable",
           },
           {
             src: "pwa-512x512.png",
             sizes: "512x512",
             type: "image/png",
+            purpose: "any maskable",
           },
         ],
       },
